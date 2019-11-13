@@ -6,17 +6,27 @@ import androidx.loader.content.CursorLoader;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     Cursor mData;
+    List<SimpleContact> contact_list;
+    ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        listView = findViewById(R.id.list_item);
+        contact_list = new ArrayList<>();
+
         new ReadContactAsync().execute();
     }
 
@@ -27,18 +37,44 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(cursor);
             mData = cursor;
             printStuff();
+            fillList();
         }
 
         @Override
         protected Cursor doInBackground(Void... voids) {
-            ContentResolver resolver = getContentResolver();
-            return  resolver.query(ContactsContract.Contacts.CONTENT_URI, null, null,
-                    null, ContactsContract.Contacts.DISPLAY_NAME + " ASC ");
+            Cursor contactsCursor = getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+                    new String[] {ContactsContract.Contacts.DISPLAY_NAME , ContactsContract.CommonDataKinds.Phone.NUMBER,ContactsContract.Contacts.HAS_PHONE_NUMBER },null,null);
+            return  contactsCursor;
         }
     }
     public void printStuff(){
         for(String s : mData.getColumnNames())
         Log.v("PRINTING", s);
     }
+    public void fillList() {
+        contact_list = new ArrayList<>();
+
+        if (mData.moveToFirst()) {
+            do {
+
+                String displayName = mData
+                        .getString(mData
+                                .getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME ));
+                String phone = mData.getString(mData.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                if(phone!=null&&phone.length()>0 && phone.charAt(0) =='+')
+                {
+                    contact_list.add(new SimpleContact(displayName, phone));
+
+                }
+
+            } while (mData.moveToNext());
+
+        }
+        mData.close();
+        ContactAdapter contactAdapter = new ContactAdapter(this, 0, contact_list);
+        listView.setAdapter(contactAdapter);
+    }
+
 
 }
