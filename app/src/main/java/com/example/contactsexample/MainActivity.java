@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Cursor doInBackground(Void... voids) {
             Cursor contactsCursor = getContentResolver().query(ContactsContract.Data.CONTENT_URI,
-                    new String[] {ContactsContract.Contacts.DISPLAY_NAME , ContactsContract.CommonDataKinds.Phone.NUMBER,ContactsContract.Contacts.HAS_PHONE_NUMBER },null,null);
+                    new String[] {ContactsContract.Contacts.DISPLAY_NAME , ContactsContract.CommonDataKinds.Phone.NUMBER,ContactsContract.CommonDataKinds.Email.ADDRESS },null,null);
             return  contactsCursor;
         }
     }
@@ -61,10 +61,11 @@ public class MainActivity extends AppCompatActivity {
                         .getString(mData
                                 .getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME ));
                 String phone = mData.getString(mData.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                String email = mData.getString(mData.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
 
-                if(phone!=null&&phone.length()>0 && phone.charAt(0) =='+')
+               // if(phone!=null&&phone.length()>0 && phone.charAt(0) =='+')
                 {
-                    contact_list.add(new SimpleContact(displayName, phone));
+                    contact_list.add(new SimpleContact(displayName, phone,email));
 
                 }
 

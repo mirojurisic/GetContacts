@@ -3,6 +3,21 @@ package com.example.contactsexample;
 public class SimpleContact {
     String name;
     String phone;
+    String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public SimpleContact(String name, String phone, String email) {
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+    }
 
     public String getName() {
         return name;

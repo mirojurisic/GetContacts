@@ -28,8 +28,10 @@ public class ContactAdapter extends ArrayAdapter<SimpleContact> {
                 .inflate(R.layout.single_contact, container, false);
         TextView name = convertView.findViewById(R.id.name);
         TextView phone = convertView.findViewById(R.id.phone);
+        TextView email_TV = convertView.findViewById(R.id.email_tv);
         name.setText(list.get(position).getName());
         phone.setText(list.get(position).getPhone());
+        email_TV.setText(list.get(position).getEmail());
         return convertView;
     }
 }
